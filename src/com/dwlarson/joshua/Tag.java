@@ -5,9 +5,10 @@ import java.nio.ByteBuffer;
 public class Tag {
 	
 	private TagType type;
+	private ByteBuffer data;
 	
-	public Tag(ByteBuffer bb) {
-		
+	public Tag(ByteBuffer data) {
+		this.data = data;
 	}
 	
 	public TagType getTag() {
@@ -23,6 +24,10 @@ public class Tag {
 	}
 	
 	public void tagShort() {
+		
+	}
+	
+	public void tagInt() {
 		
 	}
 	

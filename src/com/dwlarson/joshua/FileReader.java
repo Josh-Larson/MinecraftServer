@@ -12,7 +12,6 @@ public class FileReader {
 	
 	private boolean okay = false;
 	private DataInputStream dataStream;
-	private ByteBuffer dataBuffer;
 	
 	public FileReader(String filename) {
 		FileInputStream stream;
@@ -37,28 +36,11 @@ public class FileReader {
 			byte [] byteArray = new byte[dataStream.available()];
 			dataStream.read(byteArray);
 			ByteBuffer bb = ByteBuffer.wrap(byteArray);
-			Vector <Tag> rootTags = new Vector<Tag>();
-			while (canRead(bb)) {
-				rootTags.add((readTag(bb)));
-			}
+			NBTReader reader = new NBTReader(bb);
+			reader.read();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-	}
-	
-	public boolean canRead(ByteBuffer data) {
-		if (data.hasRemaining()) return true;
-		return false;
-	}
-	
-	public Tag readTag(ByteBuffer data) {
-		Tag ret = null;
-		switch (data.get()) {
-			case 0:
-				ret.tagEnd();
-				break;
-		}
-		return ret;
 	}
 	
 }
