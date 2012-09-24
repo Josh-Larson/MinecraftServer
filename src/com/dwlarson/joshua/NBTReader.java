@@ -14,18 +14,18 @@ public class NBTReader {
 	
 	public void read() {
 		rootTags = new Vector<Tag>();
-		while (canRead(data)) {
-			Tag t = readTag(data);
+		while (canRead()) {
+			Tag t = readTag();
 			if (t != null) rootTags.add(t);
 		}
 	}
 	
-	public boolean canRead(ByteBuffer data) {
+	public boolean canRead() {
 		if (data.hasRemaining()) return true;
 		return false;
 	}
 	
-	public Tag readTag(ByteBuffer data) {
+	public Tag readTag() {
 		Tag ret = new Tag(data);
 		switch (data.get()) {
 			case 0:
