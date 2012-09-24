@@ -8,6 +8,7 @@ public class Tag {
 	private TagType type;
 	private ByteBuffer data;
 	private Object payload;
+	private boolean noMoreData = false;
 	
 	public Tag(ByteBuffer data) {
 		this.data = data;
@@ -18,31 +19,31 @@ public class Tag {
 	}
 	
 	public void tagEnd() {
-		
+		if (type == TagType.COMPOUND) noMoreData = true;
 	}
 	
 	public void tagByte() {
-		
+		payload = data.get();
 	}
 	
 	public void tagShort() {
-		
+		payload = data.getShort();
 	}
 	
 	public void tagInt() {
-		
+		payload = data.getInt();
 	}
 	
 	public void tagLong() {
-		
+		payload = data.getLong();
 	}
 	
 	public void tagFloat() {
-		
+		payload = data.getFloat();
 	}
 	
 	public void tagDouble() {
-		
+		payload = data.getDouble();
 	}
 	
 	public void tagByteArray() {
@@ -75,6 +76,7 @@ public class Tag {
 		data.get(nameData);
 		name = new String(nameData);
 		System.out.println("  With the Name: " + name);
-		
+		NBTReader reader = new NBTReader(data);
+		reader.read();
 	}
 }

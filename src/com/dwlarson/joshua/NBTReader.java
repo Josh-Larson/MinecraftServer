@@ -7,6 +7,7 @@ public class NBTReader {
 	
 	private ByteBuffer data;
 	private Vector <Tag> rootTags;
+	private boolean done = false;
 	
 	public NBTReader(ByteBuffer data) {
 		this.data = data;
@@ -14,9 +15,10 @@ public class NBTReader {
 	
 	public void read() {
 		rootTags = new Vector<Tag>();
-		while (canRead()) {
+		while (canRead() && !done) {
 			Tag t = readTag();
 			if (t != null) rootTags.add(t);
+			else break;
 		}
 	}
 	
@@ -30,6 +32,7 @@ public class NBTReader {
 		switch (data.get()) {
 			case 0:
 				ret.tagEnd();
+				done = true;
 				break;
 			case 1:
 				ret.tagByte();
