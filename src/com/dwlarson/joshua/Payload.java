@@ -30,7 +30,9 @@ public class Payload {
 	
 	public Object [] getPayloadArray() {
 		if (type == PayloadType.NORMAL) {
-			return null;
+			Object [] ret = new Object[1];
+			ret[0] = payload;
+			return ret;
 		} else {
 			return payloadArray;
 		}

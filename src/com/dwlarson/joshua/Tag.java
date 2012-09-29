@@ -3,15 +3,13 @@ package com.dwlarson.joshua;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
 import java.util.Vector;
 
 public class Tag {
 	
 	private TagType type;
 	private ByteBuffer data;
-	private Object payload;
-	private Object [] payloadArray;
+	private Payload payload = new Payload();
 	private boolean noMoreData = false;
 	private String tagName = "";
 	
@@ -23,7 +21,11 @@ public class Tag {
 		tagName = name;
 	}
 	
-	String getName() {
+	public Object [] getPayload() {
+		return payload.getPayloadArray();
+	}
+	
+	public String getName() {
 		return tagName;
 	}
 	
@@ -37,49 +39,59 @@ public class Tag {
 	
 	public void tagEnd() {
 		noMoreData = true;
+		type = TagType.END;
 	}
 	
 	public void tagByte() {
-		payload = data.get();
+		payload.setPayload(data.get());
+		type = TagType.BYTE;
 	}
 	
 	public void tagShort() {
-		payload = data.getShort();
+		payload.setPayload(data.getShort());
+		type = TagType.SHORT;
 	}
 	
 	public void tagInt() {
-		payload = data.getInt();
+		payload.setPayload(data.getInt());
+		type = TagType.INT;
 	}
 	
 	public void tagLong() {
-		payload = data.getLong();
+		payload.setPayload(data.getLong());
+		type = TagType.LONG;
 	}
 	
 	public void tagFloat() {
-		payload = data.getFloat();
+		payload.setPayload(data.getFloat());
+		type = TagType.FLOAT;
 	}
 	
 	public void tagDouble() {
-		payload = data.getDouble();
+		payload.setPayload(data.getDouble());
+		type = TagType.DOUBLE;
 	}
 	
 	public void tagByteArray() {
 		int length = data.getInt();
 		byte [] byteArray = new byte[length];
 		data.get(byteArray);
-		payload = byteArray;
+		payload.setPayload(byteArray);
+		type = TagType.BYTE_ARRAY;
 	}
 	
 	public void tagString() {
 		int length = data.getShort();
 		byte [] strArray = new byte[length];
 		data.get(strArray);
-		payload = new String(strArray);
+		payload.setPayload(new String(strArray));
+		type = TagType.STRING;
 	}
 	
 	public void tagList() {
 		byte type = data.get();
 		int length = data.getInt();
+		Object [] payloadArray;
 		payloadArray = new Object[length+1];
 		payloadArray[0] = new Object();
 		payloadArray[0] = type;
@@ -89,6 +101,8 @@ public class Tag {
 			NBTReader.readTag(t, tagType);
 			payloadArray[i+1] = t;
 		}
+		payload.setPayload(payloadArray);
+		this.type = TagType.LIST;
 	}
 	
 	public void tagCompound() {
@@ -108,6 +122,7 @@ public class Tag {
 		byte [] nameData = new byte[length];
 		data.get(nameData);
 		name = new String(nameData);
+		setName(name);
 		//System.out.println("  With the Name: " + name);
 		
 		
@@ -152,6 +167,7 @@ public class Tag {
 			else payArray.add(t);
 		}
 		//System.out.println("Ended Compound.");
-		payloadArray = payArray.toArray();
+		payload.setPayload(payArray.toArray());
+		type = TagType.COMPOUND;
 	}
 }
