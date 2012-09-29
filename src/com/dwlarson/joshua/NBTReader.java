@@ -13,6 +13,10 @@ public class NBTReader {
 		this.data = data;
 	}
 	
+	public Vector <Tag> getTags() {
+		return rootTags;
+	}
+	
 	public void read() {
 		rootTags = new Vector<Tag>();
 		while (canRead() && !done) {
@@ -25,6 +29,50 @@ public class NBTReader {
 	public boolean canRead() {
 		if (data.hasRemaining()) return true;
 		return false;
+	}
+	
+	public static boolean readTag(Tag t, byte b) {
+		boolean ret = false;
+		switch (b) {
+			case 0:
+				t.tagEnd();
+				ret = true;
+				break;
+			case 1:
+				t.tagByte();
+				break;
+			case 2:
+				t.tagShort();
+				break;
+			case 3:
+				t.tagInt();
+				break;
+			case 4:
+				t.tagLong();
+				break;
+			case 5:
+				t.tagFloat();
+				break;
+			case 6:
+				t.tagDouble();
+				break;
+			case 7:
+				t.tagByteArray();
+				break;
+			case 8:
+				t.tagString();
+				break;
+			case 9:
+				t.tagList();
+				break;
+			case 10:
+				t.tagCompound();
+				break;
+			default:
+				t = null;
+				break;
+		}
+		return ret;
 	}
 	
 	public Tag readTag() {

@@ -52,6 +52,11 @@ public class FileReader {
 		if (okay == false) return;
 		NBTReader reader = new NBTReader(dataBuffer);
 		reader.read();
+		System.out.println("Recorded Root Tags: " + reader.getTags().size());
+	}
+	
+	public void readTagPayload(Tag t, int tab) {
+		
 	}
 	
 }
