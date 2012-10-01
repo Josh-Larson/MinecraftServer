@@ -15,16 +15,18 @@ public class RWSocket implements Runnable {
 	private Thread readThread;
 	private Thread processThread;
 	private PacketProcess process;
+	private MinecraftServer server;
 	private boolean running = false;
-	public RWSocket(Socket s) {
+	public RWSocket(Socket s, MinecraftServer server) {
 		this.socket = s;
+		this.server = server;
 		running = true;
 
 		this.readThread = new Thread(this);
 		this.readPackets = new LinkedList<DatagramPacket>();
 		this.readThread.start();
 
-		this.process = new PacketProcess();
+		this.process = new PacketProcess(this.server);
 		this.process.setSocket(this);
 		this.processThread = new Thread(this.process);
 		this.processThread.start();

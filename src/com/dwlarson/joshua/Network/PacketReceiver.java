@@ -11,14 +11,16 @@ public class PacketReceiver implements Runnable {
 	private Thread myThread;
 	private PacketConnection connection;
 	private ServerSocket socket;
+	private MinecraftServer server;
 	
-	public PacketReceiver() {
+	public PacketReceiver(MinecraftServer server) {
+		this.server = server;
 		try {
 			socket = new ServerSocket(portNumber);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		connection = new PacketConnection(socket);
+		connection = new PacketConnection(socket, server);
 	}
 	
 	public void start() {

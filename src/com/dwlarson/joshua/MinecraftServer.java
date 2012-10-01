@@ -10,12 +10,29 @@ import com.dwlarson.joshua.Network.PacketReceiver;
 
 public class MinecraftServer {
 	
-	public static Charset UTF16;
+	public static Charset UTF16 = Charset.forName("UTF-16");
+	private PacketReceiver receiver = new PacketReceiver(this);
+	
+	/** Server ID */
+	private String serverID;
+	
+	/** Encryption RSA Key */
+	private byte [] rsaKey;
+	
+	/** Verify Tokens Check the Encryption is Valid */
+	private byte [] verifyTokens = {(byte)0x00, (byte)0x01, (byte)0x02, (byte)0x03};
+	
+	public MinecraftServer() {
+		serverID = "Default Server ID";
+		rsaKey = generateRSAKey();
+	}
 	
 	public static void main(String [] args) {
-		UTF16 = Charset.forName("UTF-16");
-		PacketReceiver receiver = new PacketReceiver();
-		
+		MinecraftServer server = new MinecraftServer();
+		server.run();
+	}
+	
+	public void run() {
 		receiver.start();
 		long ticks = 0;
 		while (receiver.isOnline()) {
@@ -92,5 +109,17 @@ public class MinecraftServer {
 		}
 		str += "]";
 		return str;
+	}
+	
+	public String getServerID() {
+		return serverID;
+	}
+	
+	public byte [] getRSAKey() {
+		return rsaKey;
+	}
+	
+	public byte [] getVerifyTokens() {
+		return verifyTokens;
 	}
 }

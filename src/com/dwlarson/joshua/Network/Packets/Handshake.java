@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
+import com.dwlarson.joshua.Network.PacketProcess;
 
 public class Handshake extends Packet {
 	private byte protocolVersion;
@@ -43,6 +44,13 @@ public class Handshake extends Packet {
 		bb.put(serverHost.getBytes());
 		bb.putInt(serverPort);
 		return new DatagramPacket(bb.array(), packetLength);
+	}
+	
+	public void process(PacketProcess process) {
+		MinecraftServer s = process.getMinecraft();
+		RequestEncryptionKey response = new RequestEncryptionKey(s.getServerID(), s.getRSAKey(), s.getVerifyTokens());
+		ByteBuffer bb = ByteBuffer.wrap(response.getPacket().getData());
+		process.write(bb);
 	}
 	
 	public byte getProtocolVersion() { return protocolVersion; }

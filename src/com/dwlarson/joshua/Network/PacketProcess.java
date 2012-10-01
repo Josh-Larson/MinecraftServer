@@ -9,6 +9,11 @@ import com.dwlarson.joshua.Network.Packets.*;
 public class PacketProcess implements Runnable {
 	private RWSocket socket;
 	private boolean running = false;
+	private MinecraftServer server;
+	
+	public PacketProcess(MinecraftServer server) {
+		this.server = server;
+	}
 	
 	public void process(DatagramPacket packet) {
 		if (packet.getLength() == 0) return;
@@ -38,6 +43,14 @@ public class PacketProcess implements Runnable {
 		if (pkt != null) {
 			pkt.process(this);
 		}
+	}
+	
+	public MinecraftServer getMinecraft() {
+		return server;
+	}
+	
+	public byte [] getPublicKey() {
+		return server.generateRSAKey();
 	}
 	
 	public void write(ByteBuffer data) {
