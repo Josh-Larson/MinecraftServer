@@ -18,11 +18,11 @@ public class Handshake extends Packet {
 		
 		this.protocolVersion = bb.get();
 		
-		username = MinecraftServer.getStringFromBuffer(bb);
+		this.username = MinecraftServer.getStringFromBuffer(bb);
 		
-		serverHost = MinecraftServer.getStringFromBuffer(bb);
+		this.serverHost = MinecraftServer.getStringFromBuffer(bb);
 		
-		serverPort = bb.getInt();
+		this.serverPort = bb.getInt();
 	}
 	
 	public Handshake(byte protocolVersion, String username, String serverHost, int serverPort) {

@@ -1,18 +1,62 @@
 package com.dwlarson.joshua.Network;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.DatagramPacket;
+import java.nio.ByteBuffer;
 
+import com.dwlarson.joshua.MinecraftServer;
 import com.dwlarson.joshua.Network.Packets.*;
 
-public class PacketProcess {
-	@SuppressWarnings("rawtypes")
-	private Map <Object, Class> packetMap = new HashMap<Object, Class>();
-	public PacketProcess() {
-		packetMap.put((byte)0x02, Handshake.class);
-		packetMap.put((byte)0xFD, RequestEncryptionKey.class);
-		packetMap.put((byte)0xFE, ServerListPing.class);
+public class PacketProcess implements Runnable {
+	private RWSocket socket;
+	private boolean running = false;
+	
+	public void process(DatagramPacket packet) {
+		if (packet.getLength() == 0) return;
+		ByteBuffer data = ByteBuffer.wrap(packet.getData());
+		int packetType = (data.get() & 0xFF);
+		Packet pkt = null;
+		switch (packetType) {
+			case 0x00:
+				pkt = new KeepAlive(packet);
+				break;
+			case 0x01:
+				pkt = new LoginRequest(packet);
+				break;
+			case 0x02:
+				pkt = new Handshake(packet);
+				break;
+			case 0xFD:
+				pkt = new RequestEncryptionKey(packet);
+				break;
+			case 0xFE:
+				pkt = new ServerListPing(packet);
+				break;
+			default:
+				System.out.println("Unhandled Packet.");
+				break;
+		}
+		if (pkt != null) {
+			pkt.process(this);
+		}
 	}
 	
+	public void write(ByteBuffer data) {
+		this.socket.write(data);
+	}
 	
+	public void setSocket(RWSocket socket) {
+		this.socket = socket;
+	}
+	
+	public void run() {
+		running = true;
+		while (running) {
+			DatagramPacket packet = socket.getNextPacket();
+			if (packet != null) {
+				process(packet);
+			} else {
+				MinecraftServer.sleep(1);
+			}
+		}
+	}
 }

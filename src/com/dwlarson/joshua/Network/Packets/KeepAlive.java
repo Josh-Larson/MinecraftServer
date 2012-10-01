@@ -9,6 +9,7 @@ public class KeepAlive extends Packet {
 	public KeepAlive(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData());
 		if (bb.get() != 0x00) return;
+		System.out.println("Remaining: " + bb.remaining());
 		randomID = bb.getInt();
 	}
 	
