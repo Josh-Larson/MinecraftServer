@@ -5,17 +5,23 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+<<<<<<< HEAD
 import java.util.Arrays;
+=======
+>>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 
 import com.dwlarson.joshua.Network.PacketReceiver;
 
 public class MinecraftServer {
 	
+<<<<<<< HEAD
 	public enum ServerReturnValues {
 		GOOD,
 		ADDRESS_IN_USE
 	}
 	
+=======
+>>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 	public static Charset UTF16 = Charset.forName("UTF-16");
 	private PacketReceiver receiver = new PacketReceiver(this);
 	
@@ -28,6 +34,7 @@ public class MinecraftServer {
 	/** Verify Tokens Check the Encryption is Valid */
 	private byte [] verifyTokens = {(byte)0x00, (byte)0x01, (byte)0x02, (byte)0x03};
 	
+<<<<<<< HEAD
 	/** Current number of Players */
 	private int currentPlayers = 0;
 	
@@ -38,6 +45,11 @@ public class MinecraftServer {
 		serverID = "Default Server ID";
 		rsaKey = generateRSAKey();
 		System.out.println("RSA Key: " + Arrays.toString(rsaKey));
+=======
+	public MinecraftServer() {
+		serverID = "Default Server ID";
+		rsaKey = generateRSAKey();
+>>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 	}
 	
 	public static void main(String [] args) {
@@ -50,7 +62,10 @@ public class MinecraftServer {
 		long ticks = 0;
 		while (receiver.isOnline()) {
 			sleep(100);
+<<<<<<< HEAD
 			currentPlayers = receiver.getConnectionCount();
+=======
+>>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 			ticks++;
 			if (ticks % 100 == 0) {
 				Runtime.getRuntime().gc();
@@ -71,6 +86,7 @@ public class MinecraftServer {
 		return publicKey;
 	}
 	
+<<<<<<< HEAD
 	public int getCurrentPlayers() {
 		return currentPlayers;
 	}
@@ -79,6 +95,8 @@ public class MinecraftServer {
 		return maxPlayers;
 	}
 	
+=======
+>>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 	public static void sleep(long milli) {
 		try { Thread.sleep(milli); } catch (InterruptedException e) { }
 	}

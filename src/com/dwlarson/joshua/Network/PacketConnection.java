@@ -28,10 +28,13 @@ public class PacketConnection implements Runnable {
 		}
 	}
 	
+<<<<<<< HEAD
 	public int getConnectionCount() {
 		return this.clientSockets.size();
 	}
 	
+=======
+>>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 	public void start() {
 		myThread = new Thread(this);
 		myThread.start();
@@ -53,6 +56,10 @@ public class PacketConnection implements Runnable {
 		while (running) {
 			try {
 				Socket client = this.socket.accept();
+<<<<<<< HEAD
+=======
+				client.setSoTimeout(0);
+>>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 				RWSocket clientSocket = new RWSocket(client, this.server);
 				clientSockets.add(clientSocket);
 				System.out.println("Found a Client!");

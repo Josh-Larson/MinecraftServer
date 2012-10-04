@@ -3,7 +3,10 @@ package com.dwlarson.joshua.Network;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.Socket;
+<<<<<<< HEAD
 import java.net.SocketException;
+=======
+>>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -33,6 +36,7 @@ public class RWSocket implements Runnable {
 		this.processThread.start();
 	}
 	
+<<<<<<< HEAD
 	
 	
 	public void run() {
@@ -40,6 +44,10 @@ public class RWSocket implements Runnable {
 			if (this.socket.isClosed()) { running = false; break; }
 			if (this.socket.isInputShutdown()) { running = false; break; }
 			
+=======
+	public void run() {
+		while (running) {
+>>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 			read(); // Blocking Method
 		}
 	}
@@ -63,9 +71,12 @@ public class RWSocket implements Runnable {
 		int bytesRead = 0;
 		try {
 			bytesRead = this.socket.getInputStream().read(bData);
+<<<<<<< HEAD
 		} catch (SocketException e) {
 			running = false;
 			bytesRead = 0;
+=======
+>>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;

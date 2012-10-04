@@ -6,7 +6,11 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
+<<<<<<< HEAD
 public class AttachEntity extends Packet {
+=======
+public class Attachentity extends Packet {
+>>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 	private int entityId;
 	private int vehicleId;
 	
