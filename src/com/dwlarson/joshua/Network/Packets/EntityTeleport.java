@@ -6,7 +6,7 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Entityteleport extends Packet {
+public class EntityTeleport extends Packet {
 	private int eid;
 	private int x;
 	private int y;
@@ -14,7 +14,7 @@ public class Entityteleport extends Packet {
 	private byte yaw;
 	private byte pitch;
 	
-	public Entityteleport(DatagramPacket packet) {
+	public EntityTeleport(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x22) return;
 		
@@ -26,7 +26,7 @@ public class Entityteleport extends Packet {
 		this.pitch = bb.get();
 	}
 	
-	public Entityteleport(int eid, int x, int y, int z, byte yaw, byte pitch) {
+	public EntityTeleport(int eid, int x, int y, int z, byte yaw, byte pitch) {
 		this.eid = eid;
 		this.x = x;
 		this.y = y;

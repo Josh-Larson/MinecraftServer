@@ -6,17 +6,17 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Closewindow extends Packet {
+public class CloseWindow extends Packet {
 	private byte windowId;
 	
-	public Closewindow(DatagramPacket packet) {
+	public CloseWindow(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x65) return;
 		
 		this.windowId = bb.get();
 	}
 	
-	public Closewindow(byte windowId) {
+	public CloseWindow(byte windowId) {
 		this.windowId = windowId;
 	}
 	

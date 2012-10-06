@@ -3,8 +3,12 @@ package com.dwlarson.joshua.Network.Packets;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.util.Random;
 
 import com.dwlarson.joshua.MinecraftServer;
+import com.dwlarson.joshua.Network.Encryption;
 import com.dwlarson.joshua.Network.PacketProcess;
 
 public class Handshake extends Packet {
@@ -47,10 +51,14 @@ public class Handshake extends Packet {
 	}
 	
 	public void process(PacketProcess process) {
-		MinecraftServer s = process.getMinecraft();
-		RequestEncryptionKey response = new RequestEncryptionKey(s.getServerID(), s.getRSAKey(), s.getVerifyTokens());
-		ByteBuffer bb = ByteBuffer.wrap(response.getPacket().getData());
-		process.write(bb);
+		try {
+			EncryptionKeyRequest request = Encryption.encryptRequest(process.getKeyPair());
+			process.setEncryptionKeyRequest(request);
+			ByteBuffer data = ByteBuffer.wrap(request.getPacket().getData());
+			process.write(data);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public byte getProtocolVersion() { return protocolVersion; }

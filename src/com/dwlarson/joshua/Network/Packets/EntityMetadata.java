@@ -6,11 +6,11 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Entitymetadata extends Packet {
+public class EntityMetadata extends Packet {
 	private int entityId;
-	private metadata entityMetadata;
+	private Metadata entityMetadata;
 	
-	public Entitymetadata(DatagramPacket packet) {
+	public EntityMetadata(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x28) return;
 		
@@ -18,7 +18,7 @@ public class Entitymetadata extends Packet {
 		this.entityMetadata = ERROR;
 	}
 	
-	public Entitymetadata(int entityId, metadata entityMetadata) {
+	public EntityMetadata(int entityId, metadata entityMetadata) {
 		this.entityId = entityId;
 		this.entityMetadata = entityMetadata;
 	}

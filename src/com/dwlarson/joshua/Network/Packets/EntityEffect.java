@@ -6,13 +6,13 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Entityeffect extends Packet {
+public class EntityEffect extends Packet {
 	private int entityId;
 	private byte effectId;
 	private byte amplifier;
 	private short duration;
 	
-	public Entityeffect(DatagramPacket packet) {
+	public EntityEffect(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x29) return;
 		
@@ -22,7 +22,7 @@ public class Entityeffect extends Packet {
 		this.duration = bb.getShort();
 	}
 	
-	public Entityeffect(int entityId, byte effectId, byte amplifier, short duration) {
+	public EntityEffect(int entityId, byte effectId, byte amplifier, short duration) {
 		this.entityId = entityId;
 		this.effectId = effectId;
 		this.amplifier = amplifier;

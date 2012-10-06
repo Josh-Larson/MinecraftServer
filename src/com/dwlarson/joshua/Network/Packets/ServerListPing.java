@@ -25,11 +25,8 @@ public class ServerListPing extends Packet {
 	
 	public void process(PacketProcess process) {
 		String motd = "Josh's Server is AWESOME!";
-		String players = "";
-		String maxPlayers = "";
-		players += process.getMinecraft().getCurrentPlayers();
-		maxPlayers += process.getMinecraft().getMaxPlayers();
-		System.out.println(players + " / " + maxPlayers);
+		String players = "1025";
+		String maxPlayers = "2000";
 		String responseString = motd + "\u00A7" + players + "\u00A7" + maxPlayers;
 		System.out.println("Length: " + responseString.length());
 		DisconnectKick response = new DisconnectKick(responseString);

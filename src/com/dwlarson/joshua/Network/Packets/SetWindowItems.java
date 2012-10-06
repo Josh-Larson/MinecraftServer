@@ -6,21 +6,24 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Setwindowitems extends Packet {
+public class SetWindowItems extends Packet {
 	private byte windowId;
 	private short count;
-	private array of slots slotData;
+	private Slot [] slotData;
 	
-	public Setwindowitems(DatagramPacket packet) {
+	public SetWindowItems(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x68) return;
 		
 		this.windowId = bb.get();
 		this.count = bb.getShort();
-		this.slotData = ERROR;
+		this.slotData = new Slot[count];
+		for (int i = 0; i < count; i++) {
+			this.slotData[i] = new Slot(bb);
+		}
 	}
 	
-	public Setwindowitems(byte windowId, short count, array of slots slotData) {
+	public SetWindowItems(byte windowId, short count, Slot [] slotData) {
 		this.windowId = windowId;
 		this.count = count;
 		this.slotData = slotData;
@@ -28,15 +31,20 @@ public class Setwindowitems extends Packet {
 	
 	public DatagramPacket getPacket() {
 		int packetLength = 4;
+		for (int i = 0; i < count; i++) {
+			packetLength += slotData[i].getLength();
+		}
 		ByteBuffer bb = ByteBuffer.allocate(packetLength);
 		bb.put((byte)0x68);
 		bb.put((byte)windowId);
 		bb.putShort((short)count);
-		ERRORslotData);
+		for (int i = 0; i < count; i++) {
+			bb.put(slotData[i].getByteData());
+		}
 		return new DatagramPacket(bb.array(), packetLength);
 	}
 	
 	public byte getWindowId() { return windowId; }
 	public short getCount() { return count; }
-	public array of slots getSlotData() { return slotData; }
+	public Slot [] getSlotData() { return slotData; }
 }

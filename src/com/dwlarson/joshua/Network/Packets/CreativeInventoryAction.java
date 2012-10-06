@@ -6,19 +6,19 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Creativeinventoryaction extends Packet {
+public class CreativeInventoryAction extends Packet {
 	private short slot;
-	private slot clickedItem;
+	private Slot clickedItem;
 	
-	public Creativeinventoryaction(DatagramPacket packet) {
+	public CreativeInventoryAction(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x6B) return;
 		
 		this.slot = bb.getShort();
-		this.clickedItem = ERROR;
+		this.clickedItem = new Slot(bb);
 	}
 	
-	public Creativeinventoryaction(short slot, slot clickedItem) {
+	public CreativeInventoryAction(short slot, Slot clickedItem) {
 		this.slot = slot;
 		this.clickedItem = clickedItem;
 	}
@@ -28,10 +28,10 @@ public class Creativeinventoryaction extends Packet {
 		ByteBuffer bb = ByteBuffer.allocate(packetLength);
 		bb.put((byte)0x6B);
 		bb.putShort((short)slot);
-		ERRORclickedItem);
+		bb.put(clickedItem.getByteData());
 		return new DatagramPacket(bb.array(), packetLength);
 	}
 	
 	public short getSlot() { return slot; }
-	public slot getClickedItem() { return clickedItem; }
+	public Slot getClickedItem() { return clickedItem; }
 }

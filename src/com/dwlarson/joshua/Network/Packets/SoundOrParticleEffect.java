@@ -6,14 +6,14 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Soundorparticleeffect extends Packet {
+public class SoundOrParticleEffect extends Packet {
 	private int effectId;
 	private int x;
 	private byte y;
 	private int z;
 	private int data;
 	
-	public Soundorparticleeffect(DatagramPacket packet) {
+	public SoundOrParticleEffect(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x3D) return;
 		
@@ -24,7 +24,7 @@ public class Soundorparticleeffect extends Packet {
 		this.data = bb.getInt();
 	}
 	
-	public Soundorparticleeffect(int effectId, int x, byte y, int z, int data) {
+	public SoundOrParticleEffect(int effectId, int x, byte y, int z, int data) {
 		this.effectId = effectId;
 		this.x = x;
 		this.y = y;

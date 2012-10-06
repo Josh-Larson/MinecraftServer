@@ -6,11 +6,11 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Entitystatus extends Packet {
+public class EntityStatus extends Packet {
 	private int entityId;
 	private byte entityStatus;
 	
-	public Entitystatus(DatagramPacket packet) {
+	public EntityStatus(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x26) return;
 		
@@ -18,7 +18,7 @@ public class Entitystatus extends Packet {
 		this.entityStatus = bb.get();
 	}
 	
-	public Entitystatus(int entityId, byte entityStatus) {
+	public EntityStatus(int entityId, byte entityStatus) {
 		this.entityId = entityId;
 		this.entityStatus = entityStatus;
 	}

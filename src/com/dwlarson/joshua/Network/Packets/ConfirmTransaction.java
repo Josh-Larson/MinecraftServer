@@ -6,24 +6,24 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Confirmtransaction extends Packet {
+public class ConfirmTransaction extends Packet {
 	private byte windowId;
 	private short actionNumber;
-	private boolean accepted?;
+	private boolean accepted;
 	
-	public Confirmtransaction(DatagramPacket packet) {
+	public ConfirmTransaction(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x6A) return;
 		
 		this.windowId = bb.get();
 		this.actionNumber = bb.getShort();
-		this.accepted? = (bb.get() == (byte)1) ? true : false;
+		this.accepted = (bb.get() == (byte)1) ? true : false;
 	}
 	
-	public Confirmtransaction(byte windowId, short actionNumber, boolean accepted?) {
+	public ConfirmTransaction(byte windowId, short actionNumber, boolean accepted) {
 		this.windowId = windowId;
 		this.actionNumber = actionNumber;
-		this.accepted? = accepted?;
+		this.accepted = accepted;
 	}
 	
 	public DatagramPacket getPacket() {
@@ -32,11 +32,11 @@ public class Confirmtransaction extends Packet {
 		bb.put((byte)0x6A);
 		bb.put((byte)windowId);
 		bb.putShort((short)actionNumber);
-		(bb.put((byte)accepted?? (byte)1 : (byte)0);
+		bb.put(accepted? (byte)1 : (byte)0);
 		return new DatagramPacket(bb.array(), packetLength);
 	}
 	
 	public byte getWindowId() { return windowId; }
 	public short getActionNumber() { return actionNumber; }
-	public boolean getAccepted?() { return accepted?; }
+	public boolean getAccepted() { return accepted; }
 }

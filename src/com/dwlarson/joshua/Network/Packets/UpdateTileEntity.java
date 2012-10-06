@@ -6,15 +6,15 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Updatetileentity extends Packet {
+public class UpdateTileEntity extends Packet {
 	private int x;
 	private short y;
 	private int z;
 	private byte action;
 	private short dataLength;
-	private byte array - present if data length > 0 nbtData;
+	private byte [] nbtData;
 	
-	public Updatetileentity(DatagramPacket packet) {
+	public UpdateTileEntity(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x84) return;
 		
@@ -23,10 +23,13 @@ public class Updatetileentity extends Packet {
 		this.z = bb.getInt();
 		this.action = bb.get();
 		this.dataLength = bb.getShort();
-		this.nbtData = ERROR;
+		if (this.dataLength > 0) {
+			this.nbtData = new byte[this.dataLength];
+			bb.get(this.nbtData);
+		}
 	}
 	
-	public Updatetileentity(int x, short y, int z, byte action, short dataLength, byte array - present if data length > 0 nbtData) {
+	public UpdateTileEntity(int x, short y, int z, byte action, short dataLength, byte [] nbtData) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -36,7 +39,7 @@ public class Updatetileentity extends Packet {
 	}
 	
 	public DatagramPacket getPacket() {
-		int packetLength = 14;
+		int packetLength = 14 + dataLength;
 		ByteBuffer bb = ByteBuffer.allocate(packetLength);
 		bb.put((byte)0x84);
 		bb.putInt((int)x);
@@ -44,7 +47,9 @@ public class Updatetileentity extends Packet {
 		bb.putInt((int)z);
 		bb.put((byte)action);
 		bb.putShort((short)dataLength);
-		ERRORnbtData);
+		if (nbtData != null && dataLength > 0) {
+			bb.put(nbtData);
+		}
 		return new DatagramPacket(bb.array(), packetLength);
 	}
 	
@@ -53,5 +58,5 @@ public class Updatetileentity extends Packet {
 	public int getZ() { return z; }
 	public byte getAction() { return action; }
 	public short getDataLength() { return dataLength; }
-	public byte array - present if data length > 0 getNbtData() { return nbtData; }
+	public byte [] getNbtData() { return nbtData; }
 }

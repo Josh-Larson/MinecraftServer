@@ -6,13 +6,13 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Entityvelocity extends Packet {
+public class EntityVelocity extends Packet {
 	private int entityId;
 	private short velocityX;
 	private short velocityY;
 	private short velocityZ;
 	
-	public Entityvelocity(DatagramPacket packet) {
+	public EntityVelocity(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x1C) return;
 		
@@ -22,7 +22,7 @@ public class Entityvelocity extends Packet {
 		this.velocityZ = bb.getShort();
 	}
 	
-	public Entityvelocity(int entityId, short velocityX, short velocityY, short velocityZ) {
+	public EntityVelocity(int entityId, short velocityX, short velocityY, short velocityZ) {
 		this.entityId = entityId;
 		this.velocityX = velocityX;
 		this.velocityY = velocityY;

@@ -6,14 +6,14 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Multiblockchange extends Packet {
+public class MultiBlockChange extends Packet {
 	private int chunkX;
 	private int chunkZ;
 	private short recordCount;
 	private int dataSize;
 	private  data;
 	
-	public Multiblockchange(DatagramPacket packet) {
+	public MultiBlockChange(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x34) return;
 		
@@ -24,7 +24,7 @@ public class Multiblockchange extends Packet {
 		this.data = ERROR;
 	}
 	
-	public Multiblockchange(int chunkX, int chunkZ, short recordCount, int dataSize,  data) {
+	public MultiBlockChange(int chunkX, int chunkZ, short recordCount, int dataSize,  data) {
 		this.chunkX = chunkX;
 		this.chunkZ = chunkZ;
 		this.recordCount = recordCount;

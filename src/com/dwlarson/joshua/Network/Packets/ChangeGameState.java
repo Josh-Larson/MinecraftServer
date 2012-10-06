@@ -6,11 +6,11 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Changegamestate extends Packet {
+public class ChangeGameState extends Packet {
 	private byte reason;
 	private byte gameMode;
 	
-	public Changegamestate(DatagramPacket packet) {
+	public ChangeGameState(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x46) return;
 		
@@ -18,7 +18,7 @@ public class Changegamestate extends Packet {
 		this.gameMode = bb.get();
 	}
 	
-	public Changegamestate(byte reason, byte gameMode) {
+	public ChangeGameState(byte reason, byte gameMode) {
 		this.reason = reason;
 		this.gameMode = gameMode;
 	}

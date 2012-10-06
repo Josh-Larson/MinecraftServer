@@ -6,7 +6,7 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Namedsoundeffect extends Packet {
+public class NamedSoundEffect extends Packet {
 	private String soundName;
 	private int effectPositionX;
 	private int effectPositionY;
@@ -14,7 +14,7 @@ public class Namedsoundeffect extends Packet {
 	private float volume;
 	private byte pitch;
 	
-	public Namedsoundeffect(DatagramPacket packet) {
+	public NamedSoundEffect(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x3E) return;
 		
@@ -26,7 +26,7 @@ public class Namedsoundeffect extends Packet {
 		this.pitch = bb.get();
 	}
 	
-	public Namedsoundeffect(String soundName, int effectPositionX, int effectPositionY, int effectPositionZ, float volume, byte pitch) {
+	public NamedSoundEffect(String soundName, int effectPositionX, int effectPositionY, int effectPositionZ, float volume, byte pitch) {
 		this.soundName = soundName;
 		this.effectPositionX = effectPositionX;
 		this.effectPositionY = effectPositionY;

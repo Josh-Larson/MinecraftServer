@@ -6,32 +6,33 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Chunkdata extends Packet {
+public class ChunkData extends Packet {
 	private int x;
 	private int z;
-	private boolean ground-upContinuous;
+	private boolean groundUpContinuous;
 	private short primaryBitMap;
 	private short addBitMap;
 	private int compressedSize;
-	private byte array compressedData;
+	private byte [] compressedData;
 	
-	public Chunkdata(DatagramPacket packet) {
+	public ChunkData(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x33) return;
 		
 		this.x = bb.getInt();
 		this.z = bb.getInt();
-		this.ground-upContinuous = (bb.get() == (byte)1) ? true : false;
+		this.groundUpContinuous = (bb.get() == (byte)1) ? true : false;
 		this.primaryBitMap = bb.getShort();
 		this.addBitMap = bb.getShort();
 		this.compressedSize = bb.getInt();
-		this.compressedData = ERROR;
+		this.compressedData = new byte[compressedSize];
+		bb.get(this.compressedData);
 	}
 	
-	public Chunkdata(int x, int z, boolean ground-upContinuous, short primaryBitMap, short addBitMap, int compressedSize, byte array compressedData) {
+	public ChunkData(int x, int z, boolean groundUpContinuous, short primaryBitMap, short addBitMap, int compressedSize, byte [] compressedData) {
 		this.x = x;
 		this.z = z;
-		this.ground-upContinuous = ground-upContinuous;
+		this.groundUpContinuous = groundUpContinuous;
 		this.primaryBitMap = primaryBitMap;
 		this.addBitMap = addBitMap;
 		this.compressedSize = compressedSize;
@@ -44,19 +45,19 @@ public class Chunkdata extends Packet {
 		bb.put((byte)0x33);
 		bb.putInt((int)x);
 		bb.putInt((int)z);
-		(bb.put((byte)ground-upContinuous? (byte)1 : (byte)0);
+		bb.put(groundUpContinuous? (byte)1 : (byte)0);
 		bb.putShort((short)primaryBitMap);
 		bb.putShort((short)addBitMap);
 		bb.putInt((int)compressedSize);
-		ERRORcompressedData);
+		bb.put(this.compressedData);
 		return new DatagramPacket(bb.array(), packetLength);
 	}
 	
 	public int getX() { return x; }
 	public int getZ() { return z; }
-	public boolean getGround-upContinuous() { return ground-upContinuous; }
+	public boolean getGroundUpContinuous() { return groundUpContinuous; }
 	public short getPrimaryBitMap() { return primaryBitMap; }
 	public short getAddBitMap() { return addBitMap; }
 	public int getCompressedSize() { return compressedSize; }
-	public byte array getCompressedData() { return compressedData; }
+	public byte [] getCompressedData() { return compressedData; }
 }

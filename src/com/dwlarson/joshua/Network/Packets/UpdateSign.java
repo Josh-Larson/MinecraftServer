@@ -6,7 +6,7 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Updatesign extends Packet {
+public class UpdateSign extends Packet {
 	private int x;
 	private short y;
 	private int z;
@@ -15,7 +15,7 @@ public class Updatesign extends Packet {
 	private String text3;
 	private String text4;
 	
-	public Updatesign(DatagramPacket packet) {
+	public UpdateSign(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x82) return;
 		
@@ -28,7 +28,7 @@ public class Updatesign extends Packet {
 		this.text4 = MinecraftServer.getStringFromBuffer(bb);
 	}
 	
-	public Updatesign(int x, short y, int z, String text1, String text2, String text3, String text4) {
+	public UpdateSign(int x, short y, int z, String text1, String text2, String text3, String text4) {
 		this.x = x;
 		this.y = y;
 		this.z = z;

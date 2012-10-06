@@ -6,11 +6,11 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Removeentityeffect extends Packet {
+public class RemoveEntityEffect extends Packet {
 	private int entityId;
 	private byte effectId;
 	
-	public Removeentityeffect(DatagramPacket packet) {
+	public RemoveEntityEffect(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x2a) return;
 		
@@ -18,7 +18,7 @@ public class Removeentityeffect extends Packet {
 		this.effectId = bb.get();
 	}
 	
-	public Removeentityeffect(int entityId, byte effectId) {
+	public RemoveEntityEffect(int entityId, byte effectId) {
 		this.entityId = entityId;
 		this.effectId = effectId;
 	}

@@ -6,13 +6,13 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Openwindow extends Packet {
+public class OpenWindow extends Packet {
 	private byte windowId;
 	private byte inventoryType;
 	private String windowTitle;
 	private byte numberOfSlots;
 	
-	public Openwindow(DatagramPacket packet) {
+	public OpenWindow(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x64) return;
 		
@@ -22,7 +22,7 @@ public class Openwindow extends Packet {
 		this.numberOfSlots = bb.get();
 	}
 	
-	public Openwindow(byte windowId, byte inventoryType, String windowTitle, byte numberOfSlots) {
+	public OpenWindow(byte windowId, byte inventoryType, String windowTitle, byte numberOfSlots) {
 		this.windowId = windowId;
 		this.inventoryType = inventoryType;
 		this.windowTitle = windowTitle;

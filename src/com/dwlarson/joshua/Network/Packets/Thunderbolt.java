@@ -37,7 +37,7 @@ public class Thunderbolt extends Packet {
 		ByteBuffer bb = ByteBuffer.allocate(packetLength);
 		bb.put((byte)0x47);
 		bb.putInt((int)entityId);
-		(bb.put((byte)unknown? (byte)1 : (byte)0);
+		bb.put(unknown? (byte)1 : (byte)0);
 		bb.putInt((int)x);
 		bb.putInt((int)y);
 		bb.putInt((int)z);

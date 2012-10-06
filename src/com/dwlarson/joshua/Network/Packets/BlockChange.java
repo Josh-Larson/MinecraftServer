@@ -6,14 +6,14 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Blockchange extends Packet {
+public class BlockChange extends Packet {
 	private int x;
 	private byte y;
 	private int z;
 	private short blockType;
 	private byte blockMetadata;
 	
-	public Blockchange(DatagramPacket packet) {
+	public BlockChange(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x35) return;
 		
@@ -24,7 +24,7 @@ public class Blockchange extends Packet {
 		this.blockMetadata = bb.get();
 	}
 	
-	public Blockchange(int x, byte y, int z, short blockType, byte blockMetadata) {
+	public BlockChange(int x, byte y, int z, short blockType, byte blockMetadata) {
 		this.x = x;
 		this.y = y;
 		this.z = z;

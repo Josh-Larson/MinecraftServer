@@ -46,11 +46,9 @@ public class RequestEncryptionKey extends Packet {
 		return new DatagramPacket(data.array(), packetLength);
 	}
 	
-	public void process(PacketProcess process) {
-		
-	}
-	
 	public String getServerID() { return serverID; }
+	public short getPublicKeyLength() { return publicKeyLength; }
 	public byte [] getPublicKey() { return publicKey; }
+	public short getVerifyTokenLength() { return verifyTokenLength; }
 	public byte [] getVerifyToken() { return verifyToken; }
 }

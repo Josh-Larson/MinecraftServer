@@ -6,15 +6,11 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-<<<<<<< HEAD
 public class AttachEntity extends Packet {
-=======
-public class Attachentity extends Packet {
->>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 	private int entityId;
 	private int vehicleId;
 	
-	public Attachentity(DatagramPacket packet) {
+	public AttachEntity(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x27) return;
 		
@@ -22,7 +18,7 @@ public class Attachentity extends Packet {
 		this.vehicleId = bb.getInt();
 	}
 	
-	public Attachentity(int entityId, int vehicleId) {
+	public AttachEntity(int entityId, int vehicleId) {
 		this.entityId = entityId;
 		this.vehicleId = vehicleId;
 	}

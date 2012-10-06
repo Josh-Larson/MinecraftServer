@@ -1,27 +1,24 @@
 package com.dwlarson.joshua;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-<<<<<<< HEAD
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.Arrays;
-=======
->>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 
+import com.dwlarson.joshua.Network.Encryption;
 import com.dwlarson.joshua.Network.PacketReceiver;
 
 public class MinecraftServer {
 	
-<<<<<<< HEAD
 	public enum ServerReturnValues {
 		GOOD,
 		ADDRESS_IN_USE
 	}
 	
-=======
->>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 	public static Charset UTF16 = Charset.forName("UTF-16");
 	private PacketReceiver receiver = new PacketReceiver(this);
 	
@@ -29,12 +26,11 @@ public class MinecraftServer {
 	private String serverID;
 	
 	/** Encryption RSA Key */
-	private byte [] rsaKey;
+	private KeyPair rsaKey;
 	
 	/** Verify Tokens Check the Encryption is Valid */
 	private byte [] verifyTokens = {(byte)0x00, (byte)0x01, (byte)0x02, (byte)0x03};
 	
-<<<<<<< HEAD
 	/** Current number of Players */
 	private int currentPlayers = 0;
 	
@@ -43,13 +39,8 @@ public class MinecraftServer {
 	
 	public MinecraftServer() {
 		serverID = "Default Server ID";
-		rsaKey = generateRSAKey();
-		System.out.println("RSA Key: " + Arrays.toString(rsaKey));
-=======
-	public MinecraftServer() {
-		serverID = "Default Server ID";
-		rsaKey = generateRSAKey();
->>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
+		generateRSAKey();
+		System.out.println("RSA Key: " + Arrays.toString(getPublicKey().getEncoded()));
 	}
 	
 	public static void main(String [] args) {
@@ -62,10 +53,7 @@ public class MinecraftServer {
 		long ticks = 0;
 		while (receiver.isOnline()) {
 			sleep(100);
-<<<<<<< HEAD
 			currentPlayers = receiver.getConnectionCount();
-=======
->>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 			ticks++;
 			if (ticks % 100 == 0) {
 				Runtime.getRuntime().gc();
@@ -73,20 +61,18 @@ public class MinecraftServer {
 		}
 	}
 	
-	public byte [] generateRSAKey() {
+	public void generateRSAKey() {
 		KeyPairGenerator keyGen;
 		try {
 			keyGen = KeyPairGenerator.getInstance("RSA");
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
-			return null;
+			return;
 		}
 		keyGen.initialize(1024);
-		byte[] publicKey = keyGen.genKeyPair().getPublic().getEncoded();
-		return publicKey;
+		this.rsaKey = keyGen.generateKeyPair();
 	}
 	
-<<<<<<< HEAD
 	public int getCurrentPlayers() {
 		return currentPlayers;
 	}
@@ -95,13 +81,11 @@ public class MinecraftServer {
 		return maxPlayers;
 	}
 	
-=======
->>>>>>> 2f3e3b77e67ba27975b9e9e7fe5ef05e9154294e
 	public static void sleep(long milli) {
 		try { Thread.sleep(milli); } catch (InterruptedException e) { }
 	}
 	
-	public static String getStringFromBuffer(ByteBuffer bb) {
+	public static final String getStringFromBuffer(ByteBuffer bb) {
 		short dataLength = (short)(bb.getShort() * 2);
 		if (bb.remaining() < dataLength) return "";
 		byte [] data = new byte[dataLength];
@@ -109,28 +93,28 @@ public class MinecraftServer {
 		return new String(data, UTF16);
 	}
 	
-	public static void putStringToBuffer(String str, ByteBuffer bb) {
+	public static final void putStringToBuffer(String str, ByteBuffer bb) {
 		bb.putShort((short)str.length());
 		byte [] bytes = str.getBytes(UTF16);
 		if (bytes.length <= 2) return;
 		bb.put(bytes, 2, bytes.length-2);
 	}
 	
-	public static void putCharStringToBuffer(String str, ByteBuffer bb) {
+	public static final void putCharStringToBuffer(String str, ByteBuffer bb) {
 		bb.putShort((short)str.length());
 		byte [] bytes = str.getBytes(UTF16);
 		if (bytes.length <= 2) return;
 		bb.put(bytes, 2, bytes.length-2);
 	}
 	
-	public static byte [] getArrayFromBuffer(ByteBuffer bb) {
+	public static final byte [] getArrayFromBuffer(ByteBuffer bb) {
 		short dataLength = bb.getShort();
 		byte [] data = new byte[dataLength];
 		bb.get(data);
 		return data;
 	}
 	
-	public static String getHexString(byte b) {
+	public static final String getHexString(byte b) {
 		String hex = Integer.toHexString(0xFF & b);
 		String hexString = "";
 		if (hex.length() == 1) {
@@ -141,7 +125,7 @@ public class MinecraftServer {
 		return hexString;
 	}
 	
-	public static String getHexString(byte [] b) {
+	public static final String getHexString(byte [] b) {
 		String str = "[";
 		for (int i = 0; i < b.length; i++) {
 			if (i != 0) str += ", ";
@@ -155,8 +139,12 @@ public class MinecraftServer {
 		return serverID;
 	}
 	
-	public byte [] getRSAKey() {
-		return rsaKey;
+	public PublicKey getPublicKey() {
+		return rsaKey.getPublic();
+	}
+	
+	public PrivateKey getPrivateKey() {
+		return rsaKey.getPrivate();
 	}
 	
 	public byte [] getVerifyTokens() {

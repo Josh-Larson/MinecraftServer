@@ -6,11 +6,11 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Entityheadlook extends Packet {
+public class EntityHeadLook extends Packet {
 	private int entityId;
 	private byte headYaw;
 	
-	public Entityheadlook(DatagramPacket packet) {
+	public EntityHeadLook(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x23) return;
 		
@@ -18,7 +18,7 @@ public class Entityheadlook extends Packet {
 		this.headYaw = bb.get();
 	}
 	
-	public Entityheadlook(int entityId, byte headYaw) {
+	public EntityHeadLook(int entityId, byte headYaw) {
 		this.entityId = entityId;
 		this.headYaw = headYaw;
 	}

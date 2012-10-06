@@ -6,17 +6,17 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Tabcomplete extends Packet {
+public class TabComplete extends Packet {
 	private String text;
 	
-	public Tabcomplete(DatagramPacket packet) {
+	public TabComplete(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0xCB) return;
 		
 		this.text = MinecraftServer.getStringFromBuffer(bb);
 	}
 	
-	public Tabcomplete(String text) {
+	public TabComplete(String text) {
 		this.text = text;
 	}
 	

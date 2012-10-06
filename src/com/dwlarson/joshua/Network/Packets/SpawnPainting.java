@@ -6,7 +6,7 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Spawnpainting extends Packet {
+public class SpawnPainting extends Packet {
 	private int entityId;
 	private String title;
 	private int x;
@@ -14,7 +14,7 @@ public class Spawnpainting extends Packet {
 	private int z;
 	private int direction;
 	
-	public Spawnpainting(DatagramPacket packet) {
+	public SpawnPainting(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x19) return;
 		
@@ -26,7 +26,7 @@ public class Spawnpainting extends Packet {
 		this.direction = bb.getInt();
 	}
 	
-	public Spawnpainting(int entityId, String title, int x, int y, int z, int direction) {
+	public SpawnPainting(int entityId, String title, int x, int y, int z, int direction) {
 		this.entityId = entityId;
 		this.title = title;
 		this.x = x;

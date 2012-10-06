@@ -6,7 +6,7 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Spawnobjectvehicle extends Packet {
+public class SpawnObjectVehicle extends Packet {
 	private int eid;
 	private byte type;
 	private int x;
@@ -17,7 +17,7 @@ public class Spawnobjectvehicle extends Packet {
 	private short speedY;
 	private short speedZ;
 	
-	public Spawnobjectvehicle(DatagramPacket packet) {
+	public SpawnObjectVehicle(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x17) return;
 		
@@ -32,7 +32,7 @@ public class Spawnobjectvehicle extends Packet {
 		this.speedZ = bb.getShort();
 	}
 	
-	public Spawnobjectvehicle(int eid, byte type, int x, int y, int z, int objectData, short speedX, short speedY, short speedZ) {
+	public SpawnObjectVehicle(int eid, byte type, int x, int y, int z, int objectData, short speedX, short speedY, short speedZ) {
 		this.eid = eid;
 		this.type = type;
 		this.x = x;

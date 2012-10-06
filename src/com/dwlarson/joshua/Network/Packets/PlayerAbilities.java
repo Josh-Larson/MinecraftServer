@@ -6,12 +6,12 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Playerabilities extends Packet {
+public class PlayerAbilities extends Packet {
 	private byte flags;
 	private byte flyingSpeed;
 	private byte walkingSpeed;
 	
-	public Playerabilities(DatagramPacket packet) {
+	public PlayerAbilities(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0xCA) return;
 		
@@ -20,7 +20,7 @@ public class Playerabilities extends Packet {
 		this.walkingSpeed = bb.get();
 	}
 	
-	public Playerabilities(byte flags, byte flyingSpeed, byte walkingSpeed) {
+	public PlayerAbilities(byte flags, byte flyingSpeed, byte walkingSpeed) {
 		this.flags = flags;
 		this.flyingSpeed = flyingSpeed;
 		this.walkingSpeed = walkingSpeed;

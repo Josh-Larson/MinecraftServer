@@ -6,12 +6,12 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Updatewindowproperty extends Packet {
+public class UpdateWindowProperty extends Packet {
 	private byte windowId;
 	private short property;
 	private short value;
 	
-	public Updatewindowproperty(DatagramPacket packet) {
+	public UpdateWindowProperty(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x69) return;
 		
@@ -20,7 +20,7 @@ public class Updatewindowproperty extends Packet {
 		this.value = bb.getShort();
 	}
 	
-	public Updatewindowproperty(byte windowId, short property, short value) {
+	public UpdateWindowProperty(byte windowId, short property, short value) {
 		this.windowId = windowId;
 		this.property = property;
 		this.value = value;

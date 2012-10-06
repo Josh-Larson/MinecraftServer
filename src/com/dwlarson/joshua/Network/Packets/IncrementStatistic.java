@@ -6,11 +6,11 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Incrementstatistic extends Packet {
+public class IncrementStatistic extends Packet {
 	private int statisticId;
 	private byte amount;
 	
-	public Incrementstatistic(DatagramPacket packet) {
+	public IncrementStatistic(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0xC8) return;
 		
@@ -18,7 +18,7 @@ public class Incrementstatistic extends Packet {
 		this.amount = bb.get();
 	}
 	
-	public Incrementstatistic(int statisticId, byte amount) {
+	public IncrementStatistic(int statisticId, byte amount) {
 		this.statisticId = statisticId;
 		this.amount = amount;
 	}

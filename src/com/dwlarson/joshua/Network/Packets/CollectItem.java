@@ -6,11 +6,11 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Collectitem extends Packet {
+public class CollectItem extends Packet {
 	private int collectedEid;
 	private int collectorEid;
 	
-	public Collectitem(DatagramPacket packet) {
+	public CollectItem(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x16) return;
 		
@@ -18,7 +18,7 @@ public class Collectitem extends Packet {
 		this.collectorEid = bb.getInt();
 	}
 	
-	public Collectitem(int collectedEid, int collectorEid) {
+	public CollectItem(int collectedEid, int collectorEid) {
 		this.collectedEid = collectedEid;
 		this.collectorEid = collectorEid;
 	}

@@ -6,12 +6,12 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Entitylook extends Packet {
+public class EntityLook extends Packet {
 	private int eid;
 	private byte yaw;
 	private byte pitch;
 	
-	public Entitylook(DatagramPacket packet) {
+	public EntityLook(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x20) return;
 		
@@ -20,7 +20,7 @@ public class Entitylook extends Packet {
 		this.pitch = bb.get();
 	}
 	
-	public Entitylook(int eid, byte yaw, byte pitch) {
+	public EntityLook(int eid, byte yaw, byte pitch) {
 		this.eid = eid;
 		this.yaw = yaw;
 		this.pitch = pitch;

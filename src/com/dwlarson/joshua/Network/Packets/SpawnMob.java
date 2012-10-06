@@ -6,7 +6,7 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Spawnmob extends Packet {
+public class SpawnMob extends Packet {
 	private int eid;
 	private byte type;
 	private int x;
@@ -20,7 +20,7 @@ public class Spawnmob extends Packet {
 	private short velocityY;
 	private metadata metadata;
 	
-	public Spawnmob(DatagramPacket packet) {
+	public SpawnMob(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x18) return;
 		
@@ -38,7 +38,7 @@ public class Spawnmob extends Packet {
 		this.metadata = ERROR;
 	}
 	
-	public Spawnmob(int eid, byte type, int x, int y, int z, byte yaw, byte pitch, byte headYaw, short velocityZ, short velocityX, short velocityY, metadata metadata) {
+	public SpawnMob(int eid, byte type, int x, int y, int z, byte yaw, byte pitch, byte headYaw, short velocityZ, short velocityX, short velocityY, metadata metadata) {
 		this.eid = eid;
 		this.type = type;
 		this.x = x;

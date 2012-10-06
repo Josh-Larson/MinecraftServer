@@ -6,37 +6,37 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Setslot extends Packet {
+public class SetSlot extends Packet {
 	private byte windowId;
 	private short slot;
-	private slot slotData;
+	private Slot slotData;
 	
-	public Setslot(DatagramPacket packet) {
+	public SetSlot(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x67) return;
 		
 		this.windowId = bb.get();
 		this.slot = bb.getShort();
-		this.slotData = ERROR;
+		this.slotData = new Slot(bb);
 	}
 	
-	public Setslot(byte windowId, short slot, slot slotData) {
+	public SetSlot(byte windowId, short slot, Slot slotData) {
 		this.windowId = windowId;
 		this.slot = slot;
 		this.slotData = slotData;
 	}
 	
 	public DatagramPacket getPacket() {
-		int packetLength = 4;
+		int packetLength = 4 + slot;
 		ByteBuffer bb = ByteBuffer.allocate(packetLength);
 		bb.put((byte)0x67);
 		bb.put((byte)windowId);
 		bb.putShort((short)slot);
-		ERRORslotData);
+		bb.put(slotData.getByteData());
 		return new DatagramPacket(bb.array(), packetLength);
 	}
 	
 	public byte getWindowId() { return windowId; }
 	public short getSlot() { return slot; }
-	public slot getSlotData() { return slotData; }
+	public Slot getSlotData() { return slotData; }
 }

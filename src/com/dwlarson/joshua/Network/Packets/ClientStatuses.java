@@ -6,17 +6,17 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Clientstatuses extends Packet {
+public class ClientStatuses extends Packet {
 	private byte payload;
 	
-	public Clientstatuses(DatagramPacket packet) {
+	public ClientStatuses(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0xCD) return;
 		
 		this.payload = bb.get();
 	}
 	
-	public Clientstatuses(byte payload) {
+	public ClientStatuses(byte payload) {
 		this.payload = payload;
 	}
 	

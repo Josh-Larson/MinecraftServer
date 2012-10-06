@@ -6,7 +6,7 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Entitylookandrelativemove extends Packet {
+public class EntityLookAndRelativeMove extends Packet {
 	private int eid;
 	private byte dx;
 	private byte dy;
@@ -14,7 +14,7 @@ public class Entitylookandrelativemove extends Packet {
 	private byte yaw;
 	private byte pitch;
 	
-	public Entitylookandrelativemove(DatagramPacket packet) {
+	public EntityLookAndRelativeMove(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x21) return;
 		
@@ -26,7 +26,7 @@ public class Entitylookandrelativemove extends Packet {
 		this.pitch = bb.get();
 	}
 	
-	public Entitylookandrelativemove(int eid, byte dx, byte dy, byte dz, byte yaw, byte pitch) {
+	public EntityLookAndRelativeMove(int eid, byte dx, byte dy, byte dz, byte yaw, byte pitch) {
 		this.eid = eid;
 		this.dx = dx;
 		this.dy = dy;

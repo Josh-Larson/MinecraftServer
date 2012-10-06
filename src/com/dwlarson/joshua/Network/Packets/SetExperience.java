@@ -6,12 +6,12 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Setexperience extends Packet {
+public class SetExperience extends Packet {
 	private float experienceBar;
 	private short level;
 	private short totalExperience;
 	
-	public Setexperience(DatagramPacket packet) {
+	public SetExperience(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x2B) return;
 		
@@ -20,7 +20,7 @@ public class Setexperience extends Packet {
 		this.totalExperience = bb.getShort();
 	}
 	
-	public Setexperience(float experienceBar, short level, short totalExperience) {
+	public SetExperience(float experienceBar, short level, short totalExperience) {
 		this.experienceBar = experienceBar;
 		this.level = level;
 		this.totalExperience = totalExperience;

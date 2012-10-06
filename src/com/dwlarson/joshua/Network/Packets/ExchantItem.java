@@ -6,11 +6,11 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Exchantitem extends Packet {
+public class ExchantItem extends Packet {
 	private byte windowId;
 	private byte enchantment;
 	
-	public Exchantitem(DatagramPacket packet) {
+	public ExchantItem(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x6C) return;
 		
@@ -18,7 +18,7 @@ public class Exchantitem extends Packet {
 		this.enchantment = bb.get();
 	}
 	
-	public Exchantitem(byte windowId, byte enchantment) {
+	public ExchantItem(byte windowId, byte enchantment) {
 		this.windowId = windowId;
 		this.enchantment = enchantment;
 	}

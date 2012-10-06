@@ -8,6 +8,10 @@ import java.nio.ByteBuffer;
 import java.util.zip.GZIPInputStream;
 import java.util.Vector;
 
+import com.dwlarson.joshua.NBT.NBTReader;
+import com.dwlarson.joshua.NBT.TagReader;
+import com.dwlarson.joshua.NBT.TagType;
+
 public class FileReader {
 	
 	private boolean okay = false;
@@ -57,12 +61,12 @@ public class FileReader {
 		}
 	}
 	
-	public void readTagPayload(Tag t, int tab) {
+	public void readTagPayload(TagReader t, int tab) {
 		for (int i = 0; i < tab; i++) System.out.print("    ");
 		if (t.getTag() == TagType.COMPOUND || t.getTag() == TagType.LIST) {
 			System.out.println("Tag Array '" + t.getName() + "' [" + t.getPayload().length + "]");
 			for (int i = 0; i < t.getPayload().length; i++) {
-				readTagPayload((Tag)t.getPayload()[i], tab+1);
+				readTagPayload((TagReader)t.getPayload()[i], tab+1);
 			}
 		} else {
 			if (t.getPayload().length > 0) {

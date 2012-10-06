@@ -6,14 +6,14 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Spawnexperienceorb extends Packet {
+public class SpawnExperienceOrb extends Packet {
 	private int entityId;
 	private int x;
 	private int y;
 	private int z;
 	private short count;
 	
-	public Spawnexperienceorb(DatagramPacket packet) {
+	public SpawnExperienceOrb(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x1A) return;
 		
@@ -24,7 +24,7 @@ public class Spawnexperienceorb extends Packet {
 		this.count = bb.getShort();
 	}
 	
-	public Spawnexperienceorb(int entityId, int x, int y, int z, short count) {
+	public SpawnExperienceOrb(int entityId, int x, int y, int z, short count) {
 		this.entityId = entityId;
 		this.x = x;
 		this.y = y;

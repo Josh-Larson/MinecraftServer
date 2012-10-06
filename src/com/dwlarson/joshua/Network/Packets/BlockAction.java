@@ -6,7 +6,7 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Blockaction extends Packet {
+public class BlockAction extends Packet {
 	private int x;
 	private short y;
 	private int z;
@@ -14,7 +14,7 @@ public class Blockaction extends Packet {
 	private byte byte2;
 	private short blockId;
 	
-	public Blockaction(DatagramPacket packet) {
+	public BlockAction(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x36) return;
 		
@@ -26,7 +26,7 @@ public class Blockaction extends Packet {
 		this.blockId = bb.getShort();
 	}
 	
-	public Blockaction(int x, short y, int z, byte byte1, byte byte2, short blockId) {
+	public BlockAction(int x, short y, int z, byte byte1, byte byte2, short blockId) {
 		this.x = x;
 		this.y = y;
 		this.z = z;

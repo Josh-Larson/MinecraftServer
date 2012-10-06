@@ -6,13 +6,13 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Entityrelativemove extends Packet {
+public class EntityRelativeMove extends Packet {
 	private int eid;
 	private byte dx;
 	private byte dy;
 	private byte dz;
 	
-	public Entityrelativemove(DatagramPacket packet) {
+	public EntityRelativeMove(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0x1F) return;
 		
@@ -22,7 +22,7 @@ public class Entityrelativemove extends Packet {
 		this.dz = bb.get();
 	}
 	
-	public Entityrelativemove(int eid, byte dx, byte dy, byte dz) {
+	public EntityRelativeMove(int eid, byte dx, byte dy, byte dz) {
 		this.eid = eid;
 		this.dx = dx;
 		this.dy = dy;

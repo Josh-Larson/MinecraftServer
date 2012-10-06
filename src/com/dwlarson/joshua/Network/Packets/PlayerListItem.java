@@ -6,12 +6,12 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Playerlistitem extends Packet {
+public class PlayerListItem extends Packet {
 	private String playerName;
 	private boolean online;
 	private short ping;
 	
-	public Playerlistitem(DatagramPacket packet) {
+	public PlayerListItem(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0xC9) return;
 		
@@ -20,7 +20,7 @@ public class Playerlistitem extends Packet {
 		this.ping = bb.getShort();
 	}
 	
-	public Playerlistitem(String playerName, boolean online, short ping) {
+	public PlayerListItem(String playerName, boolean online, short ping) {
 		this.playerName = playerName;
 		this.online = online;
 		this.ping = ping;
@@ -31,7 +31,7 @@ public class Playerlistitem extends Packet {
 		ByteBuffer bb = ByteBuffer.allocate(packetLength);
 		bb.put((byte)0xC9);
 		MinecraftServer.putStringToBuffer(playerName, bb);
-		(bb.put((byte)online? (byte)1 : (byte)0);
+		bb.put(online? (byte)1 : (byte)0);
 		bb.putShort((short)ping);
 		return new DatagramPacket(bb.array(), packetLength);
 	}

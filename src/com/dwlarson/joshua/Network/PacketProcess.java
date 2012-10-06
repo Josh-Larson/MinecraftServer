@@ -2,6 +2,11 @@ package com.dwlarson.joshua.Network;
 
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+
+import javax.crypto.SecretKey;
 
 import com.dwlarson.joshua.MinecraftServer;
 import com.dwlarson.joshua.Network.Packets.*;
@@ -10,9 +15,26 @@ public class PacketProcess implements Runnable {
 	private RWSocket socket;
 	private boolean running = false;
 	private MinecraftServer server;
+	private Encryption encryption;
+	private EncryptionKeyRequest request;
+	private EncryptionKeyResponse response;
+	private SecretKey secretKey;
+	private KeyPair keys;
 	
 	public PacketProcess(MinecraftServer server) {
 		this.server = server;
+	}
+	
+	public void setEncryptionKeyRequest(EncryptionKeyRequest request) { this.request = request; }
+	public void setEncryptionKeyResponse(EncryptionKeyResponse response) { this.response = response; }
+	public EncryptionKeyRequest getEncryptionKeyRequest() { return request; }
+	public EncryptionKeyResponse getEncryptionKeyResponse() { return response; }
+	public void setSecretKey(SecretKey secretKey) {
+		this.secretKey = secretKey;
+		this.socket.setSecretKey(secretKey);
+	}
+	public void setKeyPair(KeyPair key) {
+		this.keys = key;
 	}
 	
 	public void process(DatagramPacket packet) {
@@ -20,6 +42,7 @@ public class PacketProcess implements Runnable {
 		ByteBuffer data = ByteBuffer.wrap(packet.getData());
 		int packetType = (data.get() & 0xFF);
 		Packet pkt = null;
+		System.out.println("Received Packet (" + MinecraftServer.getHexString((byte)packetType) + ")");
 		switch (packetType) {
 			case 0x00:
 				pkt = new KeepAlive(packet);
@@ -30,8 +53,11 @@ public class PacketProcess implements Runnable {
 			case 0x02:
 				pkt = new Handshake(packet);
 				break;
+			case 0xFC:
+				pkt = new EncryptionKeyResponse(packet);
+				break;
 			case 0xFD:
-				pkt = new RequestEncryptionKey(packet);
+				pkt = new EncryptionKeyRequest(packet);
 				break;
 			case 0xFE:
 				pkt = new ServerListPing(packet);
@@ -49,11 +75,41 @@ public class PacketProcess implements Runnable {
 		return server;
 	}
 	
-	public byte [] getPublicKey() {
-		return server.generateRSAKey();
+	public void setEncryption(Encryption encryption) {
+		this.encryption = encryption;
+	}
+	
+	public PublicKey getPublic() {
+		return this.keys.getPublic();
+	}
+	
+	public PrivateKey getPrivateKey() {
+		return this.keys.getPrivate();
+	}
+	
+	public KeyPair getKeyPair() {
+		return this.keys;
+	}
+	
+	public Encryption getEncryption() {
+		return encryption;
+	}
+	
+	public void setEncryptionOn() {
+		this.socket.setEncryptionOn();
+	}
+	
+	public void setEncryptionOff() {
+		this.socket.setEncryptionOff();
 	}
 	
 	public void write(ByteBuffer data) {
+		this.socket.write(data);
+	}
+	
+	public void disconnect(String reason) {
+		DatagramPacket packet = new DisconnectKick(reason).getPacket();
+		ByteBuffer data = ByteBuffer.allocate(packet.getLength());
 		this.socket.write(data);
 	}
 	

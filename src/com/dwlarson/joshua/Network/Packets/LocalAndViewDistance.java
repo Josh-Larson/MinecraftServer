@@ -6,42 +6,42 @@ import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
 
-public class Localandviewdistance extends Packet {
+public class LocalAndViewDistance extends Packet {
 	private String locale;
-	private 0 byte;
-	private 8 byte;
-	private 0 byte;
+	private byte viewDistance;
+	private byte chatFlags;
+	private byte difficulty;
 	
-	public Localandviewdistance(DatagramPacket packet) {
+	public LocalAndViewDistance(DatagramPacket packet) {
 		ByteBuffer bb = ByteBuffer.wrap(packet.getData()).order(ByteOrder.BIG_ENDIAN);
 		if (bb.get() != 0xCC) return;
 		
 		this.locale = MinecraftServer.getStringFromBuffer(bb);
-		this.byte = ERROR;
-		this.byte = ERROR;
-		this.byte = ERROR;
+		this.viewDistance = bb.get();
+		this.chatFlags = bb.get();
+		this.difficulty = bb.get();
 	}
 	
-	public Localandviewdistance(String locale, 0 byte, 8 byte, 0 byte) {
+	public LocalAndViewDistance(String locale, byte viewDistance, byte chatFlags, byte difficulty) {
 		this.locale = locale;
-		this.byte = byte;
-		this.byte = byte;
-		this.byte = byte;
+		this.viewDistance = viewDistance;
+		this.chatFlags = chatFlags;
+		this.difficulty = difficulty;
 	}
 	
 	public DatagramPacket getPacket() {
-		int packetLength = 3 + locale.length();
+		int packetLength = 6 + locale.length();
 		ByteBuffer bb = ByteBuffer.allocate(packetLength);
 		bb.put((byte)0xCC);
 		MinecraftServer.putStringToBuffer(locale, bb);
-		ERRORbyte);
-		ERRORbyte);
-		ERRORbyte);
+		bb.put(viewDistance);
+		bb.put(chatFlags);
+		bb.put(difficulty);
 		return new DatagramPacket(bb.array(), packetLength);
 	}
 	
 	public String getLocale() { return locale; }
-	public 0 getByte() { return byte; }
-	public 8 getByte() { return byte; }
-	public 0 getByte() { return byte; }
+	public byte getViewDistance() { return viewDistance; }
+	public byte getChatFlags() { return chatFlags; }
+	public byte getDifficulty() { return difficulty; }
 }
