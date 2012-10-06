@@ -9,7 +9,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Arrays;
 
-import com.dwlarson.joshua.Network.Encryption;
 import com.dwlarson.joshua.Network.PacketReceiver;
 
 public class MinecraftServer {

@@ -2,6 +2,7 @@ package com.dwlarson.joshua.Network;
 
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
+import java.security.Key;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -18,7 +19,7 @@ public class PacketProcess implements Runnable {
 	private Encryption encryption;
 	private EncryptionKeyRequest request;
 	private EncryptionKeyResponse response;
-	private SecretKey secretKey;
+	private Key secretKey;
 	private KeyPair keys;
 	
 	public PacketProcess(MinecraftServer server) {
@@ -29,7 +30,7 @@ public class PacketProcess implements Runnable {
 	public void setEncryptionKeyResponse(EncryptionKeyResponse response) { this.response = response; }
 	public EncryptionKeyRequest getEncryptionKeyRequest() { return request; }
 	public EncryptionKeyResponse getEncryptionKeyResponse() { return response; }
-	public void setSecretKey(SecretKey secretKey) {
+	public void setSecretKey(Key secretKey) {
 		this.secretKey = secretKey;
 		this.socket.setSecretKey(secretKey);
 	}

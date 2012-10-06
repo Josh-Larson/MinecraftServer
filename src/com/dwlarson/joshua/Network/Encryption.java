@@ -23,6 +23,7 @@ import java.util.Random;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -41,6 +42,7 @@ public class Encryption {
     private static final Random secure = new SecureRandom();
     private static final Random random = new Random();
     private static KeyPair keys;
+    private static Key aesKey;
 
     static {
         Security.addProvider(new BouncyCastleProvider());
@@ -48,8 +50,15 @@ public class Encryption {
 
     public static EncryptionKeyRequest encryptRequest(KeyPair keyPair) throws NoSuchAlgorithmException {
     	if (keys == null) {
-            keys = KeyPairGenerator.getInstance("RSA").generateKeyPair();
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+            keyGen.initialize(1024);
+            keys = keyGen.generateKeyPair();
         }
+    	if (aesKey == null) {
+    		KeyGenerator kGen = KeyGenerator.getInstance("AES");
+    		kGen.init(128, new SecureRandom());
+    		aesKey = kGen.generateKey();
+    	}
         
         String hash = Long.toString(random.nextLong(), 16);
         byte[] pubKey = keyPair.getPublic().getEncoded();
@@ -58,11 +67,16 @@ public class Encryption {
         return new EncryptionKeyRequest(hash, pubKey, verify);
     }
 
-    public static SecretKey getSecret(EncryptionKeyResponse resp, EncryptionKeyRequest request) throws BadPaddingException, IllegalBlockSizeException,
+    public static Key getSecret(EncryptionKeyResponse resp, EncryptionKeyRequest request) throws BadPaddingException, IllegalBlockSizeException,
             IllegalStateException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
-
-        Cipher cipher = Cipher.getInstance("RSA");
-        cipher.init(Cipher.DECRYPT_MODE, keys.getPrivate());
+    	
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+        cipher.init(Cipher.WRAP_MODE, keys.getPublic());
+        byte [] encryptSymKey = cipher.wrap(aesKey);
+        cipher.init(Cipher.UNWRAP_MODE, keys.getPrivate());
+        Key decryptedKey = cipher.unwrap(encryptSymKey, "AES", Cipher.SECRET_KEY);
+        return decryptedKey;
+        /*cipher.init(Cipher.DECRYPT_MODE, keys.getPrivate());
         byte[] decrypted = cipher.doFinal(resp.getVerifyToken());
 
         if (!Arrays.equals(request.getVerifyToken(), decrypted)) {
@@ -73,7 +87,7 @@ public class Encryption {
         byte[] shared = resp.getSharedSecret();
         byte[] secret = cipher.doFinal(shared);
 
-        return new SecretKeySpec(secret, "AES");
+        return new SecretKeySpec(secret, "AES");*/
     }
 
     public static boolean isAuthenticated(String username, String connectionHash, SecretKey shared) throws NoSuchAlgorithmException, IOException {

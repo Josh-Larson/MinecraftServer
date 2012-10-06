@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import com.dwlarson.joshua.MinecraftServer;
-import com.dwlarson.joshua.Network.PacketProcess;
 
 public class RequestEncryptionKey extends Packet {
 	private String serverID;

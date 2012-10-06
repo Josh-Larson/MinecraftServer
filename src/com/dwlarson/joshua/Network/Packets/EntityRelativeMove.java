@@ -4,8 +4,6 @@ import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import com.dwlarson.joshua.MinecraftServer;
-
 public class EntityRelativeMove extends Packet {
 	private int eid;
 	private byte dx;

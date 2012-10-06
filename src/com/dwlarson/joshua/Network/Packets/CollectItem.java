@@ -4,8 +4,6 @@ import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import com.dwlarson.joshua.MinecraftServer;
-
 public class CollectItem extends Packet {
 	private int collectedEid;
 	private int collectorEid;

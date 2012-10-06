@@ -5,22 +5,15 @@ import java.net.DatagramPacket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
+import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
 import org.bouncycastle.crypto.io.CipherInputStream;
 import org.bouncycastle.crypto.io.CipherOutputStream;
 
@@ -37,7 +30,7 @@ public class RWSocket implements Runnable {
 	private CipherOutputStream writeStream;
 	private boolean running = false;
 	private boolean encrypted = false;
-	private SecretKey key;
+	private Key key;
 	private KeyPair keys;
 	private PrivateKey privateKey;
 	
@@ -108,6 +101,7 @@ public class RWSocket implements Runnable {
 		int bytesRead = 0;
 		try {
 			if (encrypted) {
+				System.out.println("Got Decrypt Data?");
 				bytesRead = readStream.read(bData);
 			} else {
 				bytesRead = this.socket.getInputStream().read(bData);
@@ -156,11 +150,11 @@ public class RWSocket implements Runnable {
 		}
 	}
 	
-	public void setSecretKey(SecretKey key) {
+	public void setSecretKey(Key key) {
 		this.key = key;
 		try {
-			readStream = new CipherInputStream(this.socket.getInputStream(), Encryption.getCipher(false, key));
-			writeStream = new CipherOutputStream(this.socket.getOutputStream(), Encryption.getCipher(true, key));
+			readStream = new CipherInputStream(this.socket.getInputStream(), Encryption.getCipher(false, this.key));
+			writeStream = new CipherOutputStream(this.socket.getOutputStream(), Encryption.getCipher(true, this.key));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

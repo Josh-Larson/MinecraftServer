@@ -1,10 +1,8 @@
 package com.dwlarson.joshua.Network.Packets;
 
-import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 
-import com.dwlarson.joshua.MinecraftServer;
 import com.dwlarson.joshua.Network.PacketProcess;
 
 public class ServerListPing extends Packet {

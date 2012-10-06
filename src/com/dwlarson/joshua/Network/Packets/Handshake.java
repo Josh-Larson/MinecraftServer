@@ -4,9 +4,6 @@ import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.util.Random;
-
 import com.dwlarson.joshua.MinecraftServer;
 import com.dwlarson.joshua.Network.Encryption;
 import com.dwlarson.joshua.Network.PacketProcess;

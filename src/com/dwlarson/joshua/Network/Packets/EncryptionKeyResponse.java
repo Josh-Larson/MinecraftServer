@@ -3,12 +3,8 @@ package com.dwlarson.joshua.Network.Packets;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.security.Key;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
 import com.dwlarson.joshua.MinecraftServer;
@@ -52,7 +48,7 @@ public class EncryptionKeyResponse extends Packet {
 	
 	public void process(PacketProcess process) {
 		try {
-			SecretKey key = Encryption.getSecret(this, process.getEncryptionKeyRequest());
+			Key key = Encryption.getSecret(this, process.getEncryptionKeyRequest());
 			process.setEncryptionKeyResponse(this);
 			process.setSecretKey(key);
 			EncryptionKeyResponse reply = new EncryptionKeyResponse(new byte[0], new byte[0]);
