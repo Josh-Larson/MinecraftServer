@@ -13,6 +13,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -79,12 +80,19 @@ public class Encryption {
     public static Key getSecret(EncryptionKeyResponse resp, EncryptionKeyRequest request) throws BadPaddingException, IllegalBlockSizeException,
             IllegalStateException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException {
     	
-        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-        cipher.init(Cipher.WRAP_MODE, keys.getPublic());
-        byte [] encryptSymKey = cipher.wrap(aesKey);
-        cipher.init(Cipher.UNWRAP_MODE, keys.getPrivate());
-        Key decryptedKey = cipher.unwrap(encryptSymKey, "AES", Cipher.SECRET_KEY);
-        return decryptedKey;
+        Cipher cipher;
+		try {
+			cipher = Cipher.getInstance("RSA/ECB/NoPadding", "BC");
+	        cipher.init(Cipher.WRAP_MODE, keys.getPublic());
+	        byte [] encryptSymKey = cipher.wrap(aesKey);
+	        cipher.init(Cipher.UNWRAP_MODE, keys.getPrivate());
+	        Key decryptedKey = cipher.unwrap(encryptSymKey, "AES", Cipher.SECRET_KEY);
+	        System.out.println("Key Length: " + decryptedKey.getEncoded().length*8 + " bits");
+	        return decryptedKey;
+		} catch (NoSuchProviderException e) {
+			e.printStackTrace();
+		}
+		return null;
         /*cipher.init(Cipher.DECRYPT_MODE, keys.getPrivate());
         byte[] decrypted = cipher.doFinal(resp.getVerifyToken());
 
@@ -117,22 +125,10 @@ public class Encryption {
         return "YES".equals(reply);
     }
 
-    public static BufferedBlockCipher getCipher(boolean forEncryption, Key shared) {
-        /*//BufferedBlockCipher cip = new BufferedBlockCipher(new CFBBlockCipher(new AESFastEngine(), 8));
-        //CipherParameters cipherParameters = new ParametersWithIV(new KeyParameter(shared.getEncoded()), shared.getEncoded());
-    	IvParameterSpec ivspec = new IvParameterSpec(shared.getEncoded());
-    	SecretKeySpec secretSpec = new SecretKeySpec(shared.getEncoded(), "AES");
-    	CipherParameters cipherParameters = new ParametersWithIV(new KeyParameter(shared.getEncoded()), ivspec.getIV());
-        BlockCipher blockCipher = new AESFastEngine();
-        BlockCipherPadding blockCipherPadding = new ZeroBytePadding();
-        BufferedBlockCipher cip = new PaddedBufferedBlockCipher(blockCipher, blockCipherPadding);
-    	cip.init(forEncryption, cipherParameters);
-        return cip;*/
-    	PaddedBufferedBlockCipher aes = new PaddedBufferedBlockCipher(new CFBBlockCipher(new AESFastEngine(), 8));
-    	CipherParameters params = new ParametersWithIV(new KeyParameter(shared.getEncoded()), shared.getEncoded());
-    	aes.reset();
-    	aes.init(forEncryption, params);
-    	return aes;
+    public static CFBBlockCipher getCipher(boolean forEncryption, Key shared) {
+        CFBBlockCipher cip = new CFBBlockCipher(new AESFastEngine(), 8);
+        cip.init(forEncryption, new ParametersWithIV(new KeyParameter(shared.getEncoded()), shared.getEncoded(), 0, 16));
+        return cip;
     }
 
     public static SecretKey getSecret() {

@@ -21,6 +21,7 @@ import org.bouncycastle.crypto.DataLengthException;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.io.CipherInputStream;
 import org.bouncycastle.crypto.io.CipherOutputStream;
+import org.bouncycastle.crypto.modes.CFBBlockCipher;
 
 import com.dwlarson.joshua.MinecraftServer;
 
@@ -31,10 +32,8 @@ public class RWSocket implements Runnable {
 	private Thread processThread;
 	private PacketProcess process;
 	private MinecraftServer server;
-	private CipherInputStream readStream;
-	private CipherOutputStream writeStream;
-	private BufferedBlockCipher readCipher;
-	private BufferedBlockCipher writeCipher;
+	private CFBBlockCipher readCipher;
+	private CFBBlockCipher writeCipher;
 	private boolean running = false;
 	private boolean encrypted = false;
 	private Key key;
@@ -104,7 +103,9 @@ public class RWSocket implements Runnable {
 					System.out.println("Error while decrypting data. With client " + this.socket.getRemoteSocketAddress());
 				} else {
 					System.out.println("Successfully Encrypted " + output.length + " bytes");
-					writeStream.write(output);
+					byte [] outputNew = new byte[output.length];
+					writeCipher.encryptBlock(output, 0, outputNew, 0);
+					this.socket.getOutputStream().write(outputNew);
 				}
 			} else {
 				this.socket.getOutputStream().write(data.array());
@@ -145,18 +146,9 @@ public class RWSocket implements Runnable {
 				bytesRead = this.socket.getInputStream().read(bData);
 				if (encrypted) {
 					if (bytesRead > 0) {
-						data = new byte[readCipher.getOutputSize(bData.length)];
-						int outputLen = readCipher.processBytes(bData, 0, bytesRead, data, 0);
-						try {
-							outputLen += readCipher.doFinal(data, outputLen);
-							byte [] realData = new byte[outputLen];
-							System.arraycopy(data, 0, realData, 0, outputLen);
-							data = realData;
-							System.out.println("Decrypted Data. " + MinecraftServer.getHexString(data));
-						} catch (Exception e) {
-							e.printStackTrace();
-							data = null;
-						}
+						data = new byte[bytesRead];
+						int outputLen = readCipher.processBlock(bData, 0, data, 0);
+						System.out.println("Decrypted Data. " + MinecraftServer.getHexString(data));
 					}
 				} else {
 					if (bytesRead > 0) {
@@ -208,15 +200,9 @@ public class RWSocket implements Runnable {
 	
 	public void setSecretKey(Key key) {
 		this.key = key;
-		try {
-			readCipher = Encryption.getCipher(false, this.key);
-			writeCipher = Encryption.getCipher(true, this.key);
-			readStream = new CipherInputStream(this.socket.getInputStream(), readCipher);
-			writeStream = new CipherOutputStream(this.socket.getOutputStream(), writeCipher);
-			System.out.println("Set the Ciphers.");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		readCipher = Encryption.getCipher(false, this.key);
+		writeCipher = Encryption.getCipher(true, this.key);
+		System.out.println("Set the Ciphers.");
 	}
 	
 	public void setEncryptionOn() {
