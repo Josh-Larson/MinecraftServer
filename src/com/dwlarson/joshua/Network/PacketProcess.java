@@ -108,6 +108,10 @@ public class PacketProcess implements Runnable {
 		this.socket.write(data);
 	}
 	
+	public void end() {
+		running = false;
+	}
+	
 	public void disconnect(String reason) {
 		DatagramPacket packet = new DisconnectKick(reason).getPacket();
 		ByteBuffer data = ByteBuffer.allocate(packet.getLength());

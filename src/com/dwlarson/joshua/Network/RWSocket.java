@@ -10,10 +10,15 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 
 import javax.crypto.SecretKey;
+
+import org.bouncycastle.crypto.BufferedBlockCipher;
+import org.bouncycastle.crypto.DataLengthException;
+import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.io.CipherInputStream;
 import org.bouncycastle.crypto.io.CipherOutputStream;
 
@@ -28,6 +33,8 @@ public class RWSocket implements Runnable {
 	private MinecraftServer server;
 	private CipherInputStream readStream;
 	private CipherOutputStream writeStream;
+	private BufferedBlockCipher readCipher;
+	private BufferedBlockCipher writeCipher;
 	private boolean running = false;
 	private boolean encrypted = false;
 	private Key key;
@@ -63,11 +70,26 @@ public class RWSocket implements Runnable {
 	}
 	
 	public void run() {
+		Date date = new Date();
+		long lastRead = date.getTime();
+		int badComms = 0;
 		while (running) {
 			if (this.socket.isClosed()) { running = false; break; }
 			if (this.socket.isInputShutdown()) { running = false; break; }
 			read(); // Blocking Method
+			if (date.getTime()- lastRead < 15L) {
+				badComms++;
+				if (badComms > 5) {
+					System.out.println("Client Ended Communications.");
+					running = false;
+					break;
+				}
+			} else {
+				badComms = 0;
+			}
+			lastRead = date.getTime();
 		}
+		this.process.end();
 	}
 	
 	public DatagramPacket getNextPacket() {
@@ -97,15 +119,52 @@ public class RWSocket implements Runnable {
 	}
 	
 	private void read() {
-		byte [] bData = new byte[2028];
+		byte [] bData = new byte[2048];
+		byte [] data = null;
 		int bytesRead = 0;
 		try {
-			if (encrypted) {
-				System.out.println("Got Decrypt Data?");
+			/*if (encrypted) {
+				System.out.println("Listening...");
 				bytesRead = readStream.read(bData);
-			} else {
+				System.out.println("Decrypting Data. " + bytesRead);
+				if (bytesRead > 0) {
+					data = new byte[readCipher.getOutputSize(bData.length)];
+					int outputLen = readCipher.processBytes(bData, 0, bytesRead, data, 0);
+					try {
+						outputLen += readCipher.doFinal(data, outputLen);
+						byte [] realData = new byte[outputLen];
+						System.arraycopy(data, 0, realData, 0, outputLen);
+						data = realData;
+						System.out.println("Decrypted Data.");
+					} catch (Exception e) {
+						e.printStackTrace();
+						data = null;
+					}
+				}
+			} else {*/
 				bytesRead = this.socket.getInputStream().read(bData);
-			}
+				if (encrypted) {
+					if (bytesRead > 0) {
+						data = new byte[readCipher.getOutputSize(bData.length)];
+						int outputLen = readCipher.processBytes(bData, 0, bytesRead, data, 0);
+						try {
+							outputLen += readCipher.doFinal(data, outputLen);
+							byte [] realData = new byte[outputLen];
+							System.arraycopy(data, 0, realData, 0, outputLen);
+							data = realData;
+							System.out.println("Decrypted Data. " + MinecraftServer.getHexString(data));
+						} catch (Exception e) {
+							e.printStackTrace();
+							data = null;
+						}
+					}
+				} else {
+					if (bytesRead > 0) {
+						data = new byte[bytesRead];
+						System.arraycopy(bData, 0, data, 0, bytesRead);
+					}
+				}
+			//}
 		} catch (SocketException e) {
 			running = false;
 			bytesRead = 0;
@@ -113,11 +172,7 @@ public class RWSocket implements Runnable {
 			e.printStackTrace();
 			return;
 		}
-		if (bytesRead > 0) {
-			// Read the TCP data
-			byte [] data = new byte[bytesRead];
-			System.arraycopy(bData, 0, data, 0, bytesRead);
-			
+		if (data != null) {
 			/*if (encrypted) {
 				// Decrypt Data
 				try {
@@ -136,6 +191,7 @@ public class RWSocket implements Runnable {
 			packet.setAddress(this.socket.getInetAddress());
 			packet.setPort(this.socket.getPort());
 			readPackets.add(packet);
+			System.out.println("Added Packet. ------- " + packet.getLength());
 		} else {
 			MinecraftServer.sleep(2);
 		}
@@ -153,8 +209,11 @@ public class RWSocket implements Runnable {
 	public void setSecretKey(Key key) {
 		this.key = key;
 		try {
-			readStream = new CipherInputStream(this.socket.getInputStream(), Encryption.getCipher(false, this.key));
-			writeStream = new CipherOutputStream(this.socket.getOutputStream(), Encryption.getCipher(true, this.key));
+			readCipher = Encryption.getCipher(false, this.key);
+			writeCipher = Encryption.getCipher(true, this.key);
+			readStream = new CipherInputStream(this.socket.getInputStream(), readCipher);
+			writeStream = new CipherOutputStream(this.socket.getOutputStream(), writeCipher);
+			System.out.println("Set the Ciphers.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -162,6 +221,8 @@ public class RWSocket implements Runnable {
 	
 	public void setEncryptionOn() {
 		encrypted = true;
+		System.out.println("Set Encryption On.");
+		readThread.interrupt();
 	}
 	
 	public void setEncryptionOff() {

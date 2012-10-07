@@ -26,10 +26,19 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.bouncycastle.crypto.BlockCipher;
 import org.bouncycastle.crypto.BufferedBlockCipher;
+import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.engines.AESFastEngine;
+import org.bouncycastle.crypto.modes.CBCBlockCipher;
 import org.bouncycastle.crypto.modes.CFBBlockCipher;
+import org.bouncycastle.crypto.paddings.BlockCipherPadding;
+import org.bouncycastle.crypto.paddings.PKCS7Padding;
+import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
+import org.bouncycastle.crypto.paddings.ZeroBytePadding;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -109,9 +118,21 @@ public class Encryption {
     }
 
     public static BufferedBlockCipher getCipher(boolean forEncryption, Key shared) {
-        BufferedBlockCipher cip = new BufferedBlockCipher(new CFBBlockCipher(new AESFastEngine(), 8));
-        cip.init(forEncryption, new ParametersWithIV(new KeyParameter(shared.getEncoded()), shared.getEncoded(), 0, 16));
-        return cip;
+        /*//BufferedBlockCipher cip = new BufferedBlockCipher(new CFBBlockCipher(new AESFastEngine(), 8));
+        //CipherParameters cipherParameters = new ParametersWithIV(new KeyParameter(shared.getEncoded()), shared.getEncoded());
+    	IvParameterSpec ivspec = new IvParameterSpec(shared.getEncoded());
+    	SecretKeySpec secretSpec = new SecretKeySpec(shared.getEncoded(), "AES");
+    	CipherParameters cipherParameters = new ParametersWithIV(new KeyParameter(shared.getEncoded()), ivspec.getIV());
+        BlockCipher blockCipher = new AESFastEngine();
+        BlockCipherPadding blockCipherPadding = new ZeroBytePadding();
+        BufferedBlockCipher cip = new PaddedBufferedBlockCipher(blockCipher, blockCipherPadding);
+    	cip.init(forEncryption, cipherParameters);
+        return cip;*/
+    	PaddedBufferedBlockCipher aes = new PaddedBufferedBlockCipher(new CFBBlockCipher(new AESFastEngine(), 8));
+    	CipherParameters params = new ParametersWithIV(new KeyParameter(shared.getEncoded()), shared.getEncoded());
+    	aes.reset();
+    	aes.init(forEncryption, params);
+    	return aes;
     }
 
     public static SecretKey getSecret() {
